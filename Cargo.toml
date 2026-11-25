@@ -1,0 +1,36 @@
+[package]
+name = "photo-viewer"
+version = "0.1.0"
+edition = "2024"
+
+[build-dependencies]
+# 把应用图标编译进 exe 的 PE 资源，供资源管理器读取文件关联图标。
+winres = "0.1.12"
+
+[dependencies]
+# persistence 特性：启用 RON 存档，用于保存设置与窗口状态（位置/大小/最大化）。
+eframe = { version = "0.37", features = ["persistence"] }
+serde = { version = "1", features = ["derive"] }
+image = "0.25"
+rfd = "0.18"
+# 本地 OCR：ONNX Runtime 推理。
+# tls-native 必需，download-binaries 依赖它下载运行时；
+# ndarray 需与 ort 版本对齐（0.17），否则 TensorArrayData trait 不满足；
+# directml 提供 GPU 执行后端，用于加速检测模型（不可用时回退 CPU）。
+ort = { version = "2.0.0-rc.15", default-features = false, features = [
+    "std",
+    "ndarray",
+    "download-binaries",
+    "copy-dylibs",
+    "tls-native",
+    "directml",
+] }
+ndarray = "0.17"
+
+# 控制台句柄 API：GUI 子系统下接管 stderr，把 eprintln! 落到日志文件。
+# 该版本已由 eframe 间接引入，不产生额外下载。
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_System_Console",
+] }

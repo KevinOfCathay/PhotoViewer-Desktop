@@ -1,0 +1,11 @@
+# Rust 构建产物
+/target/
+
+# 打包产物（由 tools/package.ps1 生成）
+photo-viewer-win64.zip
+
+# OCR 模型文件（运行时依赖，不入库）
+/models/
+
+# tools 脚本、说明与 benchmark 图片（不入库）
+/tools/
